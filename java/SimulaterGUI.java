@@ -9,6 +9,8 @@ package racingsim;
  *
  * @author d_troy
  */
-public class Sector {
+public class SimulaterGUI {
+    
+    private Simulator sim;
     
 }
