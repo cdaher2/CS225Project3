@@ -14,11 +14,25 @@ public class Track {
 
     private File file;
     private ArrayList<Sector> sectors;
+    private int secTracker;
 
     public Track(File f){
+        secTracker = 0;
         file = f;
         sectors = new ArrayList<Sector>();
         readDataFromFile();
+    }
+
+    public Segment getNextSegment(){
+        try{
+            System.out.println(secTracker);
+            return sectors.get(secTracker).getNextSegment();
+        }
+        catch (IndexOutOfBoundsException e){
+            secTracker = 0;
+            System.out.println("Passed starting line");
+            return sectors.get(secTracker).getNextSegment();
+        }
     }
 
     private void readDataFromFile(){
@@ -59,10 +73,26 @@ public class Track {
 
         private ArrayList<Segment> segments;
         private int surfaceGrip;
+        private int segTracker;
 
         public Sector (int sg){
+            segTracker = -1;
             segments = new ArrayList<Segment>();
             surfaceGrip = sg;
+        }
+
+        public Segment getNextSegment(){
+            try {
+                segTracker++;
+                segments.get(segTracker + 1);
+                return segments.get(segTracker);
+            }
+            catch (IndexOutOfBoundsException e){
+                int l = segTracker;
+                segTracker = -1;
+                secTracker++;
+                return segments.get(l);
+            }
         }
 
         public ArrayList<Segment> getSegments() {
