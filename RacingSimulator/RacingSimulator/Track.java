@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
+ * @author Christian Daher
  *
- * @author d_troy, Christian Daher
+ * Contains data for the Track in the form of polar vectors
+ * Vector should be read by GUI, localized, and used as a reference point to draw a curve
  */
 public class Track {
 
@@ -16,6 +18,18 @@ public class Track {
     private ArrayList<Sector> sectors;
     private int secTracker;
 
+    /**
+     * Instantiates the Track with a File (should be raw text)
+     * Data should be formatted as follows:
+     * S00:5 -> "S00" refers to "Sector 0", and "5" denotes the surface grip for the sector
+     * 05:10:0000 -> "05" denotes Segment length, "10" denotes Segment width, "0000" denotes the angle at which the Segment turns (zero degrees in this case, a straight)
+     * 01:10:-005 -> in this case, the track is turning to the left by 5 degrees; the first digit in XXXX can be either a 0 (meaning a positive number, or a right turn) or a - (meaning a negative number, or a left turn)
+     * S01:6 -> Sector 1, surface grip is 6
+     * etc.
+     * in all cases, the number of characters is important - do not deviate from the XXX:Y or XX:YY:ZZZZ format, or things will break
+     *
+     * @param f File object containing formatted Track data
+     */
     public Track(File f){
         secTracker = 0;
         file = f;
@@ -23,6 +37,11 @@ public class Track {
         readDataFromFile();
     }
 
+    /**
+     * Returns the next Segment in the track
+     * Iterates through the ArrayList of Sectors, and uses the method of the same name in Sector to retrieve the next piece of the Track
+     * @return The next Segment in line
+     */
     public Segment getNextSegment(){
         try{
             System.out.println(secTracker);
@@ -35,6 +54,9 @@ public class Track {
         }
     }
 
+    /**
+     * Reads in Track data from the provided file
+     */
     private void readDataFromFile(){
         try {
             Scanner s = new Scanner(file);
@@ -61,14 +83,11 @@ public class Track {
         }
     }
 
-    public String toString(){
-        String s = "";
-        for (int i = 0; i < sectors.size(); i++){
-            s = s + sectors.get(i).toString() + " ";
-        }
-        return s;
-    }
-
+    /**
+     * An organizational class containing a small list of Segments
+     * Each Sector has its own surfaceGrip
+     * Used for keeping track of car times - this is not a critical function
+     */
     protected class Sector{
 
         private ArrayList<Segment> segments;
@@ -81,6 +100,10 @@ public class Track {
             surfaceGrip = sg;
         }
 
+        /**
+         * Iterates through the Sector's segments and returns the next one in line
+         * @return the next Segment in the Sector
+         */
         public Segment getNextSegment(){
             try {
                 segTracker++;
@@ -103,10 +126,17 @@ public class Track {
             return surfaceGrip;
         }
 
+        /**
+         * Adds a Segment to the Sector
+         * @param l length of the Segment
+         * @param w width of the Segment
+         * @param a angle of the Segment
+         */
         public void addSegment(int l, int w, int a){
-            segments.add(new Segment(l,w,a));
+            segments.add(new Segment(l,w,a, surfaceGrip));
         }
 
+        @Override
         public String toString(){
             String s = "";
             for (int i = 0; i < segments.size(); i++){
@@ -115,6 +145,15 @@ public class Track {
             return s;
         }
 
+    }
+
+    @Override
+    public String toString(){
+        String s = "";
+        for (int i = 0; i < sectors.size(); i++){
+            s = s + sectors.get(i).toString() + " ";
+        }
+        return s;
     }
 
 }

@@ -11,9 +11,9 @@ import java.util.ArrayList;
  * @author d_troy
  */
 public class Simulator {
+
     private Track track;
     private ArrayList<Car> cars;
     private int time;
-    
-    
+
 }
