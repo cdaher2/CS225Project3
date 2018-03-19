@@ -38,10 +38,9 @@ public class Track {
                     sectors.get(ts).addSegment(Integer.valueOf(t.substring(0,2)),
                             Integer.valueOf(t.substring(3,5)),
                             Integer.valueOf(t.substring(6,10)));
-                    System.out.println(ts);
                 }
 
-                s.nextLine();
+                t = s.nextLine();
             }
         } catch (FileNotFoundException e) {
             System.out.println("Track file not found, aborting");
