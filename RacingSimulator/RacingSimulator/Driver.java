@@ -1,5 +1,11 @@
 package RacingSimulator;
 
+/**
+ * @author Christian Daher
+ *
+ * A simple class used to determine how well the Car performs on a certain Segment
+ */
+
 import java.util.Random;
 
 public class Driver {
