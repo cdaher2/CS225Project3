@@ -30,7 +30,8 @@ public class Driver {
      * Numbers between 5 and 20 will return a 40, the idea being the Driver bumped a wall or other obstacle and was severely slowed down
      * Numbers 5 and below will return a 0, indicating that the Driver has wiped out and been disqualified from the race
      * Segments with an angle of 0 should temporarily increase the Driver's skillLevel, because straights are much easier than corners
-     * @return
+     * @param s the current Segment that the track is on
+     * @return percentage of the car's maximum speed that the Driver is able to achieve
      */
     public int successLevel(Segment s){
         int b = 0;
