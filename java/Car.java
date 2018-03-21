@@ -4,6 +4,15 @@ import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 
+    /* authors-
+    * Ben Florek
+    * Devin Troy
+    *
+    * Car is the basic unit of the simulation, the main focus which has a bunch of different attributes
+    * whichever cars attributes best fits the algorithm is the car which will win the race. Takes input from
+    * a .car file and sets attributes accordingly
+    */
+
 public class Car {
 
     private int driveWheels;
@@ -28,7 +37,7 @@ public class Car {
         readDataFromFile();
     }
     
-    /*readDataFromFile, takes in variables from a .txt file and sets the attributes for the car instance
+    /*readDataFromFile, takes in variables from a .car file and sets the attributes for the car instance
     uses a scanner and reads in 12 lines of ints
     */
     private void readDataFromFile(){
