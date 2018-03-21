@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 
-    /* authors-
+    /* @authors-
     * Ben Florek
     * Devin Troy
     *
