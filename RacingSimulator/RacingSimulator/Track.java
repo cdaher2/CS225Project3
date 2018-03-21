@@ -84,6 +84,14 @@ public class Track {
     }
 
     /**
+     * Returns the current sector that getNextSegment is on
+     * @return sector
+     */
+    public int getSector(){
+        return secTracker;
+    }
+
+    /**
      * An organizational class containing a small list of Segments
      * Each Sector has its own surfaceGrip
      * Used for keeping track of car times - this is not a critical function

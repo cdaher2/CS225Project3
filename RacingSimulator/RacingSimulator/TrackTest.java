@@ -5,7 +5,7 @@ import java.io.File;
 public class TrackTest {
 
     public static void main(String args[]) throws InterruptedException {
-        Track t = new Track(new File("testtrack.txt"));
+        Track t = new Track(new File("tracks/testtrack.track"));
         Thread.sleep(100);
         System.out.println(t.toString());
         Segment s;
