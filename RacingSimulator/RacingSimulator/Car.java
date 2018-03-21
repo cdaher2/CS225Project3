@@ -23,8 +23,8 @@ public class Car {
     private File image, dataFile;
     private double[][] coordinates;
 
-    public Car(){
-        dataFile = new File("file.txt");
+    public Car(File f){
+        dataFile = f;
         readDataFromFile();
     }
     
@@ -55,7 +55,8 @@ public class Car {
       return (driveWheels+tireGrip+engineMaxRPM+enginePeakTorque+currentEngineRPM+currentEngineTorque+
               weight+downforceFromAero+engineTemp+damage+frontSuspensionStiffness+rearSuspensionStiffness);
       
-    } 
+    }
+
     public int getDriveWheels(){
         return driveWheels;
     }
