@@ -60,7 +60,7 @@ public class Car {
         scan.close();
       }
       catch(FileNotFoundException e){
-        e.printStackTrace();}
+        e.printStackTrace(".car file not found");}
     }
     // uses an algorithm to calculate the top speed of the car
     // given the current conditions the car is in
