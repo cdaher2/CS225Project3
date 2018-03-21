@@ -16,6 +16,7 @@ public class Track {
 
     private File file;
     private ArrayList<Sector> sectors;
+    private String trackName;
     private int secTracker;
 
     /**
@@ -60,6 +61,7 @@ public class Track {
     private void readDataFromFile(){
         try {
             Scanner s = new Scanner(file);
+            setTrackName(s.nextLine());
             String t = s.nextLine();
             int ts = 0;
             int tsg = 0;
@@ -155,9 +157,17 @@ public class Track {
 
     }
 
+    public void setTrackName(String tn){
+        trackName = tn;
+    }
+
+    public String getTrackName(){
+        return trackName;
+    }
+
     @Override
     public String toString(){
-        String s = "";
+        String s = getTrackName() + " ";
         for (int i = 0; i < sectors.size(); i++){
             s = s + sectors.get(i).toString() + " ";
         }

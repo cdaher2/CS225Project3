@@ -18,6 +18,10 @@ public class Simulator {
     private ArrayList<Car> cars;
     private int time;
 
+
+    /**
+     * Initializes the Simulator and tells it to build the track and car lists
+     */
     public Simulator(){
         cars = new ArrayList<>();
         trackList = new ArrayList<>();
@@ -91,7 +95,7 @@ public class Simulator {
             s = s + cars.get(i).toString() + " \n";
         }
         try {
-            s = s + " Chosen track: " + track.toString() + " \n";
+            s = s + "Chosen track: " + track.toString() + " \n";
         }
         catch (NullPointerException e){
             s = s + "No track chosen";
