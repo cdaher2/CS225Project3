@@ -34,11 +34,13 @@ public class Driver {
      * @return percentage of the car's maximum speed that the Driver is able to achieve
      */
     public int successLevel(Segment s){
-        int b = 0;
+        int t;
         if (s.getAngle() == 0){
-            b = 10;
+            t = skillLevel + 10;
         }
-        int t = skillLevel + b;
+        else {
+            t = skillLevel;
+        }
         Random r = new Random();
         int roll = r.nextInt(101);
         int result = 0;

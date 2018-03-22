@@ -16,23 +16,13 @@ import java.io.FileNotFoundException;
 
 public class Car {
 
-    private int driveWheels;
     private int tireGrip;
-    private int engineMaxRPM;
-    private int enginePeakTorque;
-    private int currentEngineRPM;
-    private int currentEngineTorque;
     private int weight;
     private int downforceFromAero;
-    private int engineTemp;
-    private int damage;
-    private int frontSuspensionStiffness;
-    private int rearSuspensionStiffness;
     private double carTopSpeed;
     private Driver driver;
     private String makeAndModel;
-    private File image, dataFile;
-    private double[][] coordinates;
+    private File dataFile;
 
     public Car(File f){
         dataFile = f;
@@ -46,13 +36,12 @@ public class Car {
     private void readDataFromFile(){
         try{
             Scanner scan = new Scanner(dataFile);
-
-                setMakeAndModel(scan.nextLine());
-                setCarTopSpeed((double)scan.nextInt());
-                setTireGrip(scan.nextInt());
-                setWeight(scan.nextInt());
-                setDownforceFromAero(scan.nextInt());
-
+            setMakeAndModel(scan.nextLine());
+            setCarTopSpeed((double)scan.nextInt());
+            setTireGrip(scan.nextInt());
+            setWeight(scan.nextInt());
+            setDownforceFromAero(scan.nextInt());
+            setDriver(new Driver(scan.nextInt()));
             scan.close();
         }
         catch(FileNotFoundException e){
@@ -64,7 +53,7 @@ public class Car {
     * the most important part of the sim, basically determines which car will win
     * @return - double containing top speed
    */
-    public double calculateTopSpeedInCurrentConditions(Segment s){
+    private double calculateTopSpeedInCurrentConditions(Segment s){
         double topSpeed;
         if (s.getAngle() != 0) {
             double normalForce = (this.getWeight() * 9.8) + this.getDownforceFromAero();
@@ -79,29 +68,22 @@ public class Car {
         }
         return topSpeed;
     }
-    // @return int driveWheels attribute
-    public int getDriveWheels(){
-        return driveWheels;
+
+    /**
+     * Applies the driver's skill level to the speed calculation
+     * This is the method that should be used to determine the car's final speed
+     * @param s
+     * @return
+     */
+    public double getSegmentSpeed(Segment s){
+        double speed = calculateTopSpeedInCurrentConditions(s);
+        speed = speed * (driver.successLevel(s) / 100);
+        return speed;
     }
+
     // @return int tireGrip attribute
     public int getTireGrip(){
         return tireGrip;
-    }
-    // @return int engineMaxRPM attribute
-    public int getEngineMaxRPM(){
-        return engineMaxRPM;
-    }
-    // @return int enginePeakTorque attribute
-    public int getEnginePeakTorque(){
-        return enginePeakTorque;
-    }
-    // @return int currentEngineRPM attribute
-    public int getCurrentEngineRPM(){
-        return currentEngineRPM;
-    }
-    // @return int currentEngineTorque attribute
-    public int getCurrentEngineTorque(){
-        return currentEngineTorque;
     }
     // @return int weight attribute
     public int getWeight(){
@@ -111,22 +93,6 @@ public class Car {
     public int getDownforceFromAero(){
         return downforceFromAero;
     }
-    // @return int engineTemp attribute
-    public int getEngineTemp(){
-        return engineTemp;
-    }
-    // @return int damage attribute
-    public int getDamage(){
-        return damage;
-    }
-    // @return int frontSuspensionStiffness attribute
-    public int getFrontSuspensionStiffness(){
-        return frontSuspensionStiffness;
-    }
-    // @return int rearSuspensionStiffness attribute
-    public int getRearSuspensionStiffness(){
-        return rearSuspensionStiffness;
-    }
     // @return instance of Driver class
     public Driver getDriver(){
         return driver;
@@ -135,29 +101,9 @@ public class Car {
     public String getMakeAndModel(){
         return makeAndModel;
     }
-    // sets driveWheels attribute
-    public void setDriveWheels(int dw){
-        driveWheels = dw;
-    }
     // sets tireGrip attribute
     public void setTireGrip(int tg){
         tireGrip = tg;
-    }
-    // sets engineMaxRPM attribute
-    public void setEngineMaxRPM(int emRPM){
-        engineMaxRPM = emRPM;
-    }
-    // sets enginePeakTorque attribute
-    public void setEnginePeakTorque(int ept){
-        enginePeakTorque = ept;
-    }
-    // sets currentEngineRPM attribute
-    public void setCurrentEngineRPM(int ceRPM){
-        currentEngineRPM = ceRPM;
-    }
-    // sets curentEngineTorque attribute
-    public void setCurrentEngineTorque(int cet){
-        currentEngineTorque = cet;
     }
     // sets weight attribute
     public void setWeight(int w){
@@ -166,22 +112,6 @@ public class Car {
     // sets downforceFromAero attribute
     public void setDownforceFromAero(int dfa){
         downforceFromAero = dfa;
-    }
-    // sets engineTemp attribute
-    public void setEngineTemp(int et){
-        engineTemp = et;
-    }
-    // sets damage attribute
-    public void setDamage(int d){
-        damage = d;
-    }
-    // sets frontSuspensionStiffness attribute
-    public void setFrontSuspensionStiffness(int fss){
-        frontSuspensionStiffness = fss;
-    }
-    // sets rearSuspensionStiffness attribute
-    public void setRearSuspensionStiffness(int rss){
-        rearSuspensionStiffness = rss;
     }
     // sets driver attribute using an instance of Driver class
     public void setDriver(Driver d){
