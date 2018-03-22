@@ -68,7 +68,7 @@ public class Car {
         double topSpeed;
         if (s.getAngle() != 0) {
             double normalForce = (this.getWeight() * 9.8) + this.getDownforceFromAero();
-            double maxFrictionForce = (this.getTireGrip() + s.getGrip()) * normalForce;
+            double maxFrictionForce = ((this.getTireGrip() + s.getGrip()) / 2) * normalForce;
             topSpeed = Math.sqrt(((maxFrictionForce * s.getLength()) / this.getWeight()));
             if (topSpeed > this.getCarTopSpeed()){
                 topSpeed = this.getCarTopSpeed();
