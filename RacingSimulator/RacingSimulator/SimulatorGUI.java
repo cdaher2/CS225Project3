@@ -1,5 +1,6 @@
 package RacingSimulator;
 
+
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
@@ -28,7 +29,6 @@ public class SimulatorGUI extends Application {
     private double lastX, lastY; //variables for keeping track of the last coordinates we had when we draw
     private Path p;
     private ArrayList<MoveTo> stops;
-    private int numStops;
     private GraphicsContext gc;
     private PathTransition pt;
     private Timeline t;
@@ -36,6 +36,7 @@ public class SimulatorGUI extends Application {
     private HBox mainGUI;
     private VBox leftHalf, rightHalf;
     private Pane pane;
+    private int index;
 
     public void start(Stage primaryStage) throws InterruptedException {
         Scene s = makeGUI();
@@ -95,7 +96,8 @@ public class SimulatorGUI extends Application {
     }
 
     private void drawTrack(){
-        numStops = 0;
+        index = 0;
+        p = new Path();
         for(int i = 0; i < sim.getTrack().getNumberOfSegments(); i++) {
             drawSegment();
         }
@@ -110,57 +112,22 @@ public class SimulatorGUI extends Application {
 
         pane.getChildren().add(car);
 
-        /*DoubleProperty x  = new SimpleDoubleProperty();
-        DoubleProperty y  = new SimpleDoubleProperty();
-        t = new Timeline(
-                new KeyFrame(Duration.seconds(0),
-                        new KeyValue(x, 0),
-                        new KeyValue(y, 0)
-                ),
-                new KeyFrame(Duration.seconds(1),
-                        new KeyValue(x, 100),
-                        new KeyValue(y, 100)
-                )
-        );
-        timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                gc.fillRect(0, 0, car.getWidth(), car.getHeight());
-                gc.setFill(car.getFill());
-                gc.fillRect(
-                        x.doubleValue(),
-                        y.doubleValue(),
-                        car.getWidth(),
-                        car.getHeight()
-                );
-            }
-        };*/
-
-        p = new Path();
-        for (int i = 0; i < stops.size(); i++) {
-            p.getElements().add(stops.get(i));
-        }
-
-        p.getElements().add(new CubicCurveTo(380, 0, 380, 120, 200, 120));
-        p.getElements().add(new CubicCurveTo(0, 120, 0, 240, 380, 240));
         pt = new PathTransition();
         pt.setPath(p);
         pt.setDuration(Duration.millis(10000));
         pt.setNode(car);
+
+        //System.out.println(p.toString());
     }
 
     private void drawSegment() {
-        numStops++;
         createStop();
         gc = trackImage.getGraphicsContext2D();
         gc.setFill(Color.GREEN);
         gc.setStroke(Color.BLUE);
 
-        Segment lastSegment = sim.getTrack().getCurrentSegment();
         Segment s = sim.getTrack().getNextSegment();
-
         gc.setLineWidth(s.getWidth());
-        double lastAngle = lastSegment.getAngle();
         double angle = s.getAngle();
         double length = s.getLength();
         double newX, newY;
@@ -170,16 +137,17 @@ public class SimulatorGUI extends Application {
 
 
         //if statement to determine the direction of the angle to modify the direction we will draw in for each coordinate
-        newX = lastX + length * (Math.cos(angle + lastAngle));
-        newY = lastY + length * (Math.sin(angle + lastAngle));
+        newX = lastX + length * Math.cos(angle);
+        newY = lastY + length * Math.sin(angle);
 
-
+        p.getElements().add(stops.get(index));
+        p.getElements().add(new LineTo(newX , newY));
         //gc.strokeLine(40, 10, 10, 40);
-        int adj = 10;
-        gc.strokeLine(lastX * adj, lastY * adj, newX * adj, newY * adj);
+        gc.strokeLine(lastX, lastY, newX, newY);
         //gc.strokeLine(lastX, lastY, newX, newY);
         lastX = newX;
         lastY = newY;
+        index++;
 
     }
 
