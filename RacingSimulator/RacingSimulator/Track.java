@@ -102,6 +102,15 @@ public class Track {
         return numberOfSegments;
     }
 
+    public Segment getCurrentSegment(){
+        try {
+            return sectors.get(getSector()).getSegments().get(sectors.get(getSector()).getSegTracker());
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            return new Segment(0,0,0, 0);
+        }
+    }
+
     /**
      * An organizational class containing a small list of Segments
      * Each Sector has its own surfaceGrip
@@ -117,6 +126,10 @@ public class Track {
             segTracker = -1;
             segments = new ArrayList<Segment>();
             surfaceGrip = sg;
+        }
+
+        public int getSegTracker(){
+            return segTracker;
         }
 
         /**

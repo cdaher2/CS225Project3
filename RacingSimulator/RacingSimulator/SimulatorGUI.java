@@ -1,8 +1,9 @@
 package RacingSimulator;
 
-import javafx.animation.PathTransition;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -11,12 +12,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -29,7 +29,13 @@ public class SimulatorGUI extends Application {
     private Path p;
     private ArrayList<MoveTo> stops;
     private int numStops;
-    PathTransition pt;
+    private GraphicsContext gc;
+    private PathTransition pt;
+    private Timeline t;
+    private AnimationTimer timer;
+    private HBox mainGUI;
+    private VBox leftHalf, rightHalf;
+    private Pane pane;
 
     public void start(Stage primaryStage) throws InterruptedException {
         Scene s = makeGUI();
@@ -41,17 +47,21 @@ public class SimulatorGUI extends Application {
         stops = new ArrayList<MoveTo>();
         lastX = 1; //initializing lastX. It needs to be a non-zero number to properly appear on the canvas later.
         lastY = 1; //initializing lastY. It needs to be a non-zero number to properly appear on the canvas later.
-        HBox mainGUI = new HBox(); //declaring and initializing our mainGUI HBox to occupy our scene
-        VBox leftHalf, rightHalf; //the halves of the GUI
+        mainGUI = new HBox(); //initializing our mainGUI HBox to occupy our scene
+        //VBox leftHalf, rightHalf; //the halves of the GUI
         leftHalf = new VBox(); //leftHalf holds the buttons and the image representing the race
         rightHalf = new VBox(); //rightHalf holds the script of the race as it occurs
+        StackPane sp = new StackPane();
+        leftHalf.getChildren().add(sp);
+
         mainGUI.getChildren().addAll(leftHalf, rightHalf); //adding our halves to the main GUI
         HBox controls = new HBox(); //Button controls
-
+        pane = new Pane();
         trackImage = new Canvas(1000, 500); //Canvas for creating the image representing the race
         //We need to modularly set the size of the canvas based on size of the track
 
-        leftHalf.getChildren().add(trackImage); //add the trackImage to the left half
+        sp.getChildren().add(trackImage); //add the trackImage to the left half
+        sp.getChildren().add(pane);
         leftHalf.getChildren().add(controls); //add the controls to the left half underneath the image
 
         Button start, chooseCar, chooseTrack; //Button declarations
@@ -86,41 +96,71 @@ public class SimulatorGUI extends Application {
 
     private void drawTrack(){
         numStops = 0;
-        int numSegments = sim.getTrack().getNumberOfSegments();
-        for(int i = 0; i < numSegments; i++) {
+        for(int i = 0; i < sim.getTrack().getNumberOfSegments(); i++) {
             drawSegment();
         }
         drawCarsOnTrack();
     }
 
     private void drawCarsOnTrack(){
-        Rectangle car = new Rectangle(lastX, lastY, 2, 5);
+        Rectangle car = new Rectangle(lastX, lastY, 5, 5);
         car.setArcHeight(10);
         car.setArcHeight(10);
         car.setFill(Color.ORANGE);
-        //gc.
+
+        pane.getChildren().add(car);
+
+        /*DoubleProperty x  = new SimpleDoubleProperty();
+        DoubleProperty y  = new SimpleDoubleProperty();
+        t = new Timeline(
+                new KeyFrame(Duration.seconds(0),
+                        new KeyValue(x, 0),
+                        new KeyValue(y, 0)
+                ),
+                new KeyFrame(Duration.seconds(1),
+                        new KeyValue(x, 100),
+                        new KeyValue(y, 100)
+                )
+        );
+        timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                gc.fillRect(0, 0, car.getWidth(), car.getHeight());
+                gc.setFill(car.getFill());
+                gc.fillRect(
+                        x.doubleValue(),
+                        y.doubleValue(),
+                        car.getWidth(),
+                        car.getHeight()
+                );
+            }
+        };*/
 
         p = new Path();
         for (int i = 0; i < stops.size(); i++) {
             p.getElements().add(stops.get(i));
         }
 
+        p.getElements().add(new CubicCurveTo(380, 0, 380, 120, 200, 120));
+        p.getElements().add(new CubicCurveTo(0, 120, 0, 240, 380, 240));
         pt = new PathTransition();
         pt.setPath(p);
-        pt.setDuration(Duration.millis(4000));
+        pt.setDuration(Duration.millis(10000));
         pt.setNode(car);
-        pt.setCycleCount(Timeline.INDEFINITE);
     }
 
     private void drawSegment() {
         numStops++;
         createStop();
-        GraphicsContext gc = trackImage.getGraphicsContext2D();
+        gc = trackImage.getGraphicsContext2D();
         gc.setFill(Color.GREEN);
         gc.setStroke(Color.BLUE);
 
+        Segment lastSegment = sim.getTrack().getCurrentSegment();
         Segment s = sim.getTrack().getNextSegment();
+
         gc.setLineWidth(s.getWidth());
+        double lastAngle = lastSegment.getAngle();
         double angle = s.getAngle();
         double length = s.getLength();
         double newX, newY;
@@ -130,8 +170,8 @@ public class SimulatorGUI extends Application {
 
 
         //if statement to determine the direction of the angle to modify the direction we will draw in for each coordinate
-        newX = lastX + length * Math.cos(angle);
-        newY = lastY + length * Math.sin(angle);
+        newX = lastX + length * (Math.cos(angle + lastAngle));
+        newY = lastY + length * (Math.sin(angle + lastAngle));
 
 
         //gc.strokeLine(40, 10, 10, 40);
@@ -167,5 +207,7 @@ public class SimulatorGUI extends Application {
         sim.setTrack(sim.getTrackList().get(0)); //setting the track. This is only for making sure the program runs when I draw the track
         drawTrack();
         pt.play();
+        //timer.start();
+        //t.play();
     }
 }
