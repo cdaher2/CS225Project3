@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 /** @authors-
  * Ben Florek
  * Devin Troy
+ * Christian Daher
  *
  * Car is the basic unit of the simulation, the main focus which has a bunch of different attributes
  * whichever cars attributes best fits the algorithm is the car which will win the race. Takes input from
@@ -27,6 +28,7 @@ public class Car {
     private int damage;
     private int frontSuspensionStiffness;
     private int rearSuspensionStiffness;
+    private double carTopSpeed;
     private Driver driver;
     private String makeAndModel;
     private File image, dataFile;
@@ -37,26 +39,19 @@ public class Car {
         readDataFromFile();
     }
 
-    /*readDataFromFile, takes in variables from a .car file and sets the attributes for the car instance
-    uses a scanner and reads in 12 lines of ints
+    /**
+     * readDataFromFile, takes in variables from a .car file and sets the attributes for the car instance
+     *   uses a scanner and reads in 12 lines of ints
     */
     private void readDataFromFile(){
         try{
             Scanner scan = new Scanner(dataFile);
 
                 setMakeAndModel(scan.nextLine());
-                setDriveWheels(scan.nextInt());
+                setCarTopSpeed((double)scan.nextInt());
                 setTireGrip(scan.nextInt());
-                setEngineMaxRPM(scan.nextInt());
-                setEnginePeakTorque(scan.nextInt());
-                setCurrentEngineRPM(scan.nextInt());
-                setCurrentEngineTorque(scan.nextInt());
                 setWeight(scan.nextInt());
                 setDownforceFromAero(scan.nextInt());
-                setEngineTemp(scan.nextInt());
-                setDamage(scan.nextInt());
-                setFrontSuspensionStiffness(scan.nextInt());
-                setRearSuspensionStiffness(scan.nextInt());
 
             scan.close();
         }
@@ -64,14 +59,25 @@ public class Car {
             e.printStackTrace();
         }
     }
-    // uses an algorithm to calculate the top speed of the car
-    // given the current conditions the car is in
-    // the most important part of the sim, basically determines which car will win
-    //@return - double containing top speed
-    public double calculateTopSpeedInCurrentConditions(){
-        return (driveWheels+tireGrip+engineMaxRPM+enginePeakTorque+currentEngineRPM+currentEngineTorque+
-                weight+downforceFromAero+engineTemp+damage+frontSuspensionStiffness+rearSuspensionStiffness);
-
+    /** uses an algorithm to calculate the top speed of the car
+    * given the current conditions the car is in
+    * the most important part of the sim, basically determines which car will win
+    * @return - double containing top speed
+   */
+    public double calculateTopSpeedInCurrentConditions(Segment s){
+        double topSpeed;
+        if (s.getAngle() != 0) {
+            double normalForce = (this.getWeight() * 9.8) + this.getDownforceFromAero();
+            double maxFrictionForce = (this.getTireGrip() + s.getGrip()) * normalForce;
+            topSpeed = Math.sqrt(((maxFrictionForce * s.getLength()) / this.getWeight()));
+            if (topSpeed > this.getCarTopSpeed()){
+                topSpeed = this.getCarTopSpeed();
+            }
+        }
+        else {
+            topSpeed = this.getCarTopSpeed();
+        }
+        return topSpeed;
     }
     // @return int driveWheels attribute
     public int getDriveWheels(){
@@ -185,6 +191,15 @@ public class Car {
     public void setMakeAndModel(String mam){
         makeAndModel = mam;
     }
+
+    public double getCarTopSpeed() {
+        return carTopSpeed;
+    }
+
+    public void setCarTopSpeed(double carTopSpeed) {
+        this.carTopSpeed = carTopSpeed;
+    }
+
 
     public String toString(){
         return makeAndModel;
