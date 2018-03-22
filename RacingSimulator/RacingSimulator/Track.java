@@ -18,6 +18,7 @@ public class Track {
     private ArrayList<Sector> sectors;
     private String trackName;
     private int secTracker;
+    private int numberOfSegments;
 
     /**
      * Instantiates the Track with a File (should be raw text)
@@ -32,6 +33,7 @@ public class Track {
      * @param f File object containing formatted Track data
      */
     public Track(File f){
+        numberOfSegments = 0;
         secTracker = 0;
         file = f;
         sectors = new ArrayList<Sector>();
@@ -94,6 +96,14 @@ public class Track {
     }
 
     /**
+     * Returns the number of Segments in the Track
+     * @return number of segments
+     */
+    public int getNumberOfSegments() {
+        return numberOfSegments;
+    }
+
+    /**
      * An organizational class containing a small list of Segments
      * Each Sector has its own surfaceGrip
      * Used for keeping track of car times - this is not a critical function
@@ -144,6 +154,7 @@ public class Track {
          */
         public void addSegment(int l, int w, int a){
             segments.add(new Segment(l,w,a, surfaceGrip));
+            numberOfSegments++;
         }
 
         @Override
