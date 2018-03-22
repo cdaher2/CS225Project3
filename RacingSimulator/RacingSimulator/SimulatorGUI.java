@@ -86,7 +86,8 @@ public class SimulatorGUI extends Application {
 
     private void drawTrack(){
         numStops = 0;
-        for(int i = 0; i < 4; i++) {
+        int numSegments = sim.getTrack().getNumberOfSegments();
+        for(int i = 0; i < numSegments; i++) {
             drawSegment();
         }
         drawCarsOnTrack();

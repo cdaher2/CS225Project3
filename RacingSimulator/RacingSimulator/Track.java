@@ -47,12 +47,10 @@ public class Track {
      */
     public Segment getNextSegment(){
         try{
-            System.out.println(secTracker);
             return sectors.get(secTracker).getNextSegment();
         }
         catch (IndexOutOfBoundsException e){
             secTracker = 0;
-            System.out.println("Passed starting line");
             return sectors.get(secTracker).getNextSegment();
         }
     }
@@ -78,6 +76,7 @@ public class Track {
                     sectors.get(ts).addSegment(Integer.valueOf(t.substring(0,2)),
                             Integer.valueOf(t.substring(3,5)),
                             Integer.valueOf(t.substring(6,10)));
+                    numberOfSegments++;
                 }
 
                 t = s.nextLine();
@@ -154,7 +153,7 @@ public class Track {
          */
         public void addSegment(int l, int w, int a){
             segments.add(new Segment(l,w,a, surfaceGrip));
-            numberOfSegments++;
+
         }
 
         @Override

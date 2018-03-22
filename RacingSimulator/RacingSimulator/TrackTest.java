@@ -12,7 +12,6 @@ public class TrackTest {
         for (int i = 0; i < 40; i++){
             s = t.getNextSegment();
             System.out.println(s.toString());
-
         }
     }
 }
